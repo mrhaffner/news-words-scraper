@@ -11,17 +11,19 @@ fox_url = 'http://feeds.foxnews.com/foxnews/latest'
 federalist_url = 'https://thefederalist.com/feed/'
 npr_url ='https://feeds.npr.org/1002/rss.xml'
 rt_url = 'https://www.rt.com/rss/usa/'
+cbc_url = 'https://www.cbc.ca/cmlink/rss-topstories'
 
-def get_description(story):
-    dirty_desciption = story.description.get_text()
-    if dirty_desciption[:3] == '<p>':
-        return dirty_desciption[3:].split('</p>')[0]
-    elif dirty_desciption[:5].strip() == '<img':
-        return dirty_desciption.split('/>')[1].split('<')[0]
-    else:
-        return dirty_desciption.split('<')[0]
+def parse_cnn_article(url):
+    headers = requests.utils.default_headers()
+    headers.update({
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+    })
+    page = requests.get(url, headers=headers)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    article = soup.find('section', id='body-text')
+    return article.get_text()
 
-def parse_stories(url):
+def parse_rss_feed(url):
     headers = requests.utils.default_headers()
     headers.update({
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
@@ -34,9 +36,8 @@ def parse_stories(url):
 
     for story in stories:
         story_data = {}
-        story_data['title'] = story.title.get_text().strip()
-        story_data['url'] = story.guid.get_text().strip()
-        story_data['description'] = get_description(story).strip()
+        story_data['title'] = story.title.get_text(strip=True)
+        story_data['url'] = story.guid.get_text(strip=True)
         story_data['date_collected'] = datetime.today().strftime('%Y-%m-%d')
         stories_data.append(story_data)
     
@@ -53,3 +54,7 @@ def parse_stories(url):
 # federalist_data = parse_stories(federalist_url)
 # guardian_data = parse_stories(guardian_url)
 # rt_data = parse_stories(rt_url)
+# cbc_data = parse_stories(cbc_url)
+
+cnn_article = parse_cnn_article('https://www.cnn.com/2021/11/20/us/atlanta-airport-scare/index.html)')
+print(cnn_article)
