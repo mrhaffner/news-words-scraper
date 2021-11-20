@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import time
 
 cnn_url = 'http://rss.cnn.com/rss/cnn_topstories.rss'
 # kos_url = 'http://feeds.dailykosmedia.com/dailykosofficial'
@@ -35,28 +36,33 @@ def parse_article(url, website):
         article = soup.find(website_content[website]['tag'], id=website_content[website]['id'])
     else:
         article = soup.find(website_content[website]['tag'], class_=website_content[website]['class'])
-    return article.get_text()
+    return article.get_text() if article else ''
 
-def parse_rss_feed(url):
+def parse_rss_feed(url, website):
     headers = requests.utils.default_headers()
     headers.update({
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
     })
     page = requests.get(url, headers=headers)
     soup = BeautifulSoup(page.content, 'html.parser')
-    stories = soup.find_all('item')
+    articles = soup.find_all('item')
 
-    stories_data = []
+    articles_data = []
 
-    for story in stories:
-        story_data = {}
-        story_data['title'] = story.title.get_text(strip=True)
-        story_data['url'] = story.guid.get_text(strip=True)
-        story_data['date_collected'] = datetime.today().strftime('%Y-%m-%d')
-        stories_data.append(story_data)
+    for article in articles:
+        article_data = {}
+        article_data['title'] = article.title.get_text(strip=True)
+        article_data['url'] = article.guid.get_text(strip=True)
+        article_data['body'] = parse_article(article_data['url'], website)
+        article_data['date_collected'] = datetime.today().strftime('%Y-%m-%d')
+
+        articles_data.append(article_data)
+        time.sleep(2)
     
-    return stories_data
+    return articles_data
 
+# cnn_data = parse_rss_feed(cnn_url, 'cnn')
+# print(cnn_data)
 
 
 # npr_data = parse_stories(npr_url)
