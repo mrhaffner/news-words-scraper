@@ -13,14 +13,18 @@ npr_url ='https://feeds.npr.org/1002/rss.xml'
 rt_url = 'https://www.rt.com/rss/usa/'
 cbc_url = 'https://www.cbc.ca/cmlink/rss-topstories'
 
-def parse_cnn_article(url):
+def parse_article(url, website):
+    website_content = {
+        'cnn': {'tag': 'section', 'id': 'body-text' },
+        'guardian': {'tag': 'div', 'id': 'maincontent'}
+    }
     headers = requests.utils.default_headers()
     headers.update({
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
     })
     page = requests.get(url, headers=headers)
     soup = BeautifulSoup(page.content, 'html.parser')
-    article = soup.find('section', id='body-text')
+    article = soup.find(website_content[website]['tag'], id=website_content[website]['id'])
     return article.get_text()
 
 def parse_rss_feed(url):
@@ -56,5 +60,6 @@ def parse_rss_feed(url):
 # rt_data = parse_stories(rt_url)
 # cbc_data = parse_stories(cbc_url)
 
-cnn_article = parse_cnn_article('https://www.cnn.com/2021/11/20/us/atlanta-airport-scare/index.html)')
-print(cnn_article)
+url = 'https://www.theguardian.com/us-news/2021/nov/20/us-covid-infections-rise-upper-midwest'
+
+print(parse_article('https://www.cnn.com/2021/11/20/us/atlanta-airport-scare/index.html', 'cnn'))
