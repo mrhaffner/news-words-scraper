@@ -4,17 +4,18 @@ from datetime import datetime
 
 cnn_url = 'http://rss.cnn.com/rss/cnn_topstories.rss'
 # kos_url = 'http://feeds.dailykosmedia.com/dailykosofficial'
-guardian_url = 'https://www.theguardian.com/us/rss'
+guardian_url = 'https://www.theguardian.com/us/rss' #needs additional cleaning in get_descriptions
 huffpo_url = 'https://chaski.huffpost.com/us/auto'
 breitbart_url = 'https://feeds.feedburner.com/breitbart'
 fox_url = 'http://feeds.foxnews.com/foxnews/latest'
 federalist_url = 'https://thefederalist.com/feed/'
+npr_url ='https://feeds.npr.org/1002/rss.xml'
 
 def get_description(story):
     dirty_desciption = story.description.get_text()
 
     if dirty_desciption[:3] == '<p>':
-        return dirty_desciption
+        return dirty_desciption[3:].split('</p>')[0]
     else:
         return dirty_desciption.split('<')[0]
 
@@ -41,7 +42,7 @@ def parse_stories(url):
 
 
 
-
+# npr_data = parse_stories(npr_url)
 # cnn_data = parse_stories(cnn_url)
 # huffpo_data = parse_stories(huffpo_url)
 # # kos_data = parse_stories(kos_url)
