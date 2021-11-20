@@ -3,10 +3,20 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 cnn_url = 'http://rss.cnn.com/rss/cnn_topstories.rss'
+# kos_url = 'http://feeds.dailykosmedia.com/dailykosofficial'
+guardian_url = 'https://www.theguardian.com/us/rss'
+huffpo_url = 'https://chaski.huffpost.com/us/auto'
 breitbart_url = 'https://feeds.feedburner.com/breitbart'
 fox_url = 'http://feeds.foxnews.com/foxnews/latest'
 federalist_url = 'https://thefederalist.com/feed/'
 
+def get_description(story):
+    dirty_desciption = story.description.get_text()
+
+    if dirty_desciption[:3] == '<p>':
+        return dirty_desciption
+    else:
+        return dirty_desciption.split('<')[0]
 
 def parse_stories(url):
     headers = requests.utils.default_headers()
@@ -23,15 +33,19 @@ def parse_stories(url):
         story_data = {}
         story_data['title'] = story.title.get_text()
         story_data['url'] = story.guid.get_text()
-        dirty_desciption = story.description.get_text()
-        description = dirty_desciption.split('<')[0]
-        story_data['description'] = description
+        story_data['description'] = get_description(story)
         story_data['date_collected'] = datetime.today().strftime('%Y-%m-%d')
         stories_data.append(story_data)
     
     return stories_data
 
+
+
+
 # cnn_data = parse_stories(cnn_url)
+# huffpo_data = parse_stories(huffpo_url)
+# # kos_data = parse_stories(kos_url)
 # breitbart_data = parse_stories(breitbart_url)
 # fox_data = parse_stories(fox_url)
 # federalist_data = parse_stories(federalist_url)
+# guardian_data = parse_stories(guardian_url)
