@@ -10,12 +10,14 @@ breitbart_url = 'https://feeds.feedburner.com/breitbart'
 fox_url = 'http://feeds.foxnews.com/foxnews/latest'
 federalist_url = 'https://thefederalist.com/feed/'
 npr_url ='https://feeds.npr.org/1002/rss.xml'
+rt_url = 'https://www.rt.com/rss/usa/'
 
 def get_description(story):
     dirty_desciption = story.description.get_text()
-
     if dirty_desciption[:3] == '<p>':
         return dirty_desciption[3:].split('</p>')[0]
+    elif dirty_desciption[:5].strip() == '<img':
+        return dirty_desciption.split('/>')[1].split('<')[0]
     else:
         return dirty_desciption.split('<')[0]
 
@@ -32,9 +34,9 @@ def parse_stories(url):
 
     for story in stories:
         story_data = {}
-        story_data['title'] = story.title.get_text()
-        story_data['url'] = story.guid.get_text()
-        story_data['description'] = get_description(story)
+        story_data['title'] = story.title.get_text().strip()
+        story_data['url'] = story.guid.get_text().strip()
+        story_data['description'] = get_description(story).strip()
         story_data['date_collected'] = datetime.today().strftime('%Y-%m-%d')
         stories_data.append(story_data)
     
@@ -50,3 +52,4 @@ def parse_stories(url):
 # fox_data = parse_stories(fox_url)
 # federalist_data = parse_stories(federalist_url)
 # guardian_data = parse_stories(guardian_url)
+# rt_data = parse_stories(rt_url)
