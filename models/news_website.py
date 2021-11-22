@@ -5,10 +5,9 @@ import time
 
 
 class NewsWebsite:
-    WEBSITES_QUERY = '''
+    WEBSITES_QUERY = '''   
         SELECT id, name, rss_url, article_entry_element, article_entry_class, article_entry_id 
-        FROM websites
-        '''
+        FROM websites '''
 
     def __init__(self, id, name, rss_url, article_entry_element, article_entry_class, article_entry_id):
         self.id = id
@@ -30,4 +29,5 @@ class NewsWebsite:
         for rss_article in rss_articles:
             parsed_article = NewsArticle(rss_article, self.article_entry_element, self.article_entry_class, self.article_entry_id, self.id)
             parsed_article.save()
+            break
             time.sleep(1)

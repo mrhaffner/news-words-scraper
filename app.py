@@ -5,6 +5,7 @@ websites = NewsWebsite.get_all()
 
 for website in websites:
     website.scrape_rss_feed()
-
+    
+db.commit()
 
 db.close()

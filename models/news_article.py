@@ -4,6 +4,9 @@ from models import get_soup
 
 
 class NewsArticle:
+    SAVE_SQL = '''
+        INSERT INTO articles (website_id, url, title, date, text) 
+        VALUES(?,?,?,?,?) '''
     #get id from database set to highest? increment from there? or use uuid?
     #sqlite have an option?
     def __init__(self, rss_article, entry_element, entry_class, entry_id, website_id):
@@ -39,4 +42,6 @@ class NewsArticle:
         print(self.text)
         print(self.date)
         print(self.website_id)
-        return
+        values = (self.website_id, self.url, self.title, self.date, self.text)
+        cursor.execute(NewsArticle.SAVE_SQL, values)
+        #probably save to db here
