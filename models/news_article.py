@@ -1,12 +1,13 @@
 from project import cursor, db
 from datetime import datetime
 from models import get_soup
-
+from collections import Counter
 
 class NewsArticle:
-    SAVE_SQL = '''
+    CREATE_SQL = '''
         INSERT INTO articles (website_id, url, title, date, text) 
-        VALUES(?,?,?,?,?) '''
+        VALUES(?,?,?,?,?)
+    '''
 
 
     def __init__(self, rss_article, entry_element, entry_class, entry_id, website_id):
@@ -41,5 +42,13 @@ class NewsArticle:
         if self.text == '':
             return
         values = (self.website_id, self.url, self.title, self.date, self.text)
-        cursor.execute(NewsArticle.SAVE_SQL, values)
+        cursor.execute(NewsArticle.CREATE_SQL, values)
         db.commit()
+
+
+    def count_words(self):
+        title_words = self.title.split()
+        article_words = self.text.split()
+        return Counter(title_words + article_words)
+
+

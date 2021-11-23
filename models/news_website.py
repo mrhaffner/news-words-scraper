@@ -22,7 +22,7 @@ class NewsWebsite:
     @staticmethod
     def get_all():
         websites_results = cursor.execute(NewsWebsite.WEBSITES_QUERY)
-        return  [NewsWebsite(*website_info) for website_info in websites_results]
+        return [NewsWebsite(*website_info) for website_info in websites_results]
 
 
     def scrape_rss_feed(self):
