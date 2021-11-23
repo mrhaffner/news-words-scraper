@@ -9,6 +9,7 @@ class NewsWebsite:
         SELECT id, name, rss_url, article_entry_element, article_entry_class, article_entry_id 
         FROM websites '''
 
+
     def __init__(self, id, name, rss_url, article_entry_element, article_entry_class, article_entry_id):
         self.id = id
         self.name = name
@@ -23,11 +24,19 @@ class NewsWebsite:
         websites_results = cursor.execute(NewsWebsite.WEBSITES_QUERY)
         return  [NewsWebsite(*website_info) for website_info in websites_results]
 
+
     def scrape_rss_feed(self):
         soup = get_soup(self.rss_url)
         rss_articles = soup.find_all('item')
         for rss_article in rss_articles:
             parsed_article = NewsArticle(rss_article, self.article_entry_element, self.article_entry_class, self.article_entry_id, self.id)
-            parsed_article.save()
-            break
+            parsed_article.create_one()
             time.sleep(1)
+
+
+    @staticmethod
+    def scrape_all():
+        websites = NewsWebsite.get_all()
+
+        for website in websites:
+            website.scrape_rss_feed()
