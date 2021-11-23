@@ -12,8 +12,8 @@ create_articles_table = '''
         date TEXT NOT NULL,
         text TEXT NOT NULL,
         FOREIGN KEY (website_id) REFERENCES websites (id)
-    )
-;'''
+    );
+'''
 
 cursor.execute(create_articles_table)
 
@@ -28,7 +28,7 @@ create_words_table = '''
         federalist_count INTEGER DEFAULT 0 NOT NULL,
         npr_count INTEGER DEFAULT 0 NOT NULL,
         rt_count INTEGER DEFAULT 0 NOT NULL,
-        cbc_count INTEGER DEFAULT 0 NOT NULL,
+        cbc_count INTEGER DEFAULT 0 NOT NULL
     );
 '''
 
