@@ -35,7 +35,6 @@ class NewsWebsite:
             new_article.create_one()
             #is this the best place for this?
             NewsWord.parse_news_article(new_article)
-            break
             time.sleep(1)
 
 
@@ -45,4 +44,3 @@ class NewsWebsite:
 
         for website in websites:
             website.scrape_rss_feed()
-            break

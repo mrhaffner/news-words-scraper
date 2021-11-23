@@ -28,17 +28,18 @@ class NewsWord:
     def parse_news_article(news_article):
         words_counter = news_article.count_words()
         for word, count in words_counter.items():
-            word_query_result = NewsWord.get_word(word)
-            populated_word = NewsWord(word)
-
-            if len(word_query_result.fetchall()) == 0:
+            #make this return NewsWord object
+            word_query_result = NewsWord.get_word(word).fetchall()
+            if len(word_query_result) == 0:
+                populated_word = NewsWord(word)
                 populated_word.create_one()
+            else:
+                populated_word = NewsWord(*(word_query_result[0]))  
 
             column = f'{news_article.website_id}_count'
             #should be increment count method?
             current_count = getattr(populated_word, column)
             setattr(populated_word, column, current_count + count)
-            
             populated_word.update_word_count(column, populated_word)
 
     # def increase_word_count(self, column, count_to_add):
