@@ -1,4 +1,6 @@
 from project import cursor, db
+import re
+
 
 class NewsWord:
     WORD_QUERY = '''
@@ -28,10 +30,10 @@ class NewsWord:
     def parse_news_article(news_article):
         words_counter = news_article.count_words()
         for word, count in words_counter.items():
-            #make this return NewsWord object
-            word_query_result = NewsWord.get_word(word).fetchall()
+            cleaned_word = NewsWord.clean_word(word)
+            word_query_result = NewsWord.get_word(cleaned_word).fetchall()
             if len(word_query_result) == 0:
-                populated_word = NewsWord(word)
+                populated_word = NewsWord(cleaned_word)
                 populated_word.create_one()
             else:
                 populated_word = NewsWord(*(word_query_result[0]))  
@@ -44,12 +46,22 @@ class NewsWord:
 
     # def increase_word_count(self, column, count_to_add):
 
-
     @staticmethod
     def get_word(word):
         found_word = cursor.execute(NewsWord.WORD_QUERY, (word,))
         return found_word if found_word else None
 
+    @staticmethod
+    def clean_word(word):
+        lower_word = word.lower()
+        word_front_clean = re.sub('^\W*', '', lower_word)
+        word_front_back_clean = re.sub('\W*$', '', word_front_clean)
+        word_no_cnn = re.sub('\(cnn\)', '', word_front_back_clean)
+        return word_no_cnn
+
+    @staticmethod
+    def contains_letter(word):
+        return re.match('.*[A-Za-z].*', word) is not None
 
     def update_word_count(self, column, news_word):
         update_sql = f'UPDATE words SET {column} = ? WHERE word = ?'
@@ -60,6 +72,8 @@ class NewsWord:
     def create_one(self):
         cursor.execute(NewsWord.CREATE_SQL, (self.word,))
         db.commit()
+
+    
 
 #when do I emplement saving the words? after article creation?
 
