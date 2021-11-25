@@ -35,7 +35,20 @@ class NewsArticle:
 
         text_raw = article_body.get_text() if article_body else ''
 
-        return ' '.join(text_raw.split())
+        return NewsArticle.clean_text(text_raw)
+
+    @staticmethod
+    def clean_text(text):
+        text_period_clean = NewsArticle.remove_periods_between_words(text)
+        return NewsArticle.remove_extra_white_space(text_period_clean)
+
+    @staticmethod
+    def remove_periods_between_words(text):
+        return ' '.join(text.split('.'))
+
+    @staticmethod
+    def remove_extra_white_space(text):
+        return ' '.join(text.split())
 
 
     def create_one(self):
