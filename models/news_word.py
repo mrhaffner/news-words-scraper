@@ -56,8 +56,10 @@ class NewsWord:
         lower_word = word.lower()
         word_front_clean = re.sub('^\W*', '', lower_word)
         word_front_back_clean = re.sub('\W*$', '', word_front_clean)
-        word_no_cnn = re.sub('\(cnn\)', '', word_front_back_clean)
-        return word_no_cnn
+        word_no_trailing_apos_s = re.sub('\'s$', '',  word_front_back_clean)
+        word_no_cnn = re.sub('cnn\)', '', word_no_trailing_apos_s)
+        word_no_cnn_business = re.sub('business\)', '', word_no_cnn)
+        return word_no_cnn_business
 
     @staticmethod
     def contains_letter(word):
