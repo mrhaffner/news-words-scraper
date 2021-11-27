@@ -1,6 +1,5 @@
 from models.news_article import NewsArticle
-from models.news_word import NewsWord
-from project import cursor
+from project import cursor, db
 from models import get_soup
 import time
 
@@ -31,16 +30,21 @@ class NewsWebsite:
         soup = get_soup(self.rss_url)
         rss_articles = soup.find_all('item')
         for rss_article in rss_articles:
+            #check if exists?
             new_article = NewsArticle(rss_article, self.article_entry_element, self.article_entry_class, self.article_entry_id, self.id)
             new_article.create_one()
-            #is this the best place for this?
-            NewsWord.parse_news_article(new_article)
             time.sleep(1)
 
 
     @staticmethod
     def scrape_all():
         websites = NewsWebsite.get_all()
-
         for website in websites:
             website.scrape_rss_feed()
+
+
+    @staticmethod
+    def clean_all():
+        df = NewsArticle.get_unclean_articles()
+        cleaned_df = NewsArticle.clean_articles(df)
+        NewsArticle.save_cleaned_articles(cleaned_df)
