@@ -1,16 +1,10 @@
 from models.news_article import NewsArticle
-from project import cursor, db
+from project import cursor
 from models import get_soup
 import time
 
 
 class NewsWebsite:
-    WEBSITES_QUERY = '''   
-        SELECT id, name, rss_url, article_entry_element, article_entry_class, article_entry_id 
-        FROM websites
-    '''
-
-
     def __init__(self, id, name, rss_url, article_entry_element, article_entry_class, article_entry_id):
         self.id = id
         self.name = name
@@ -22,7 +16,11 @@ class NewsWebsite:
 
     @staticmethod
     def get_all():
-        websites_results = cursor.execute(NewsWebsite.WEBSITES_QUERY)
+        websites_query = '''   
+            SELECT id, name, rss_url, article_entry_element, article_entry_class, article_entry_id 
+            FROM websites
+        '''
+        websites_results = cursor.execute(websites_query)
         return [NewsWebsite(*website_info) for website_info in websites_results]
 
 

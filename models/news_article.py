@@ -6,18 +6,6 @@ import texthero as hero
 
 
 class NewsArticle:
-    CREATE_SQL = '''
-        INSERT INTO articles (website_id, url, title, date, text) 
-        VALUES(?,?,?,?,?)
-    '''
-
-    WEBSITES_TO_CLEAN_QUERY = '''
-        SELECT id, title, text
-        FROM ARTICLES
-        WHERE clean_title IS NULL
-            OR clean_text IS NULL
-    '''
-
     def __init__(self, rss_article, entry_element, entry_class, entry_id, website_id):
         self.website_id = website_id
         self.title = rss_article.title.get_text(strip=True)
@@ -49,31 +37,42 @@ class NewsArticle:
 
 
     def create_one(self):
+        create_sql = '''
+            INSERT INTO articles (website_id, url, title, date, text) 
+            VALUES(?,?,?,?,?)
+        '''
         if self.text == '':
             return
         values = (self.website_id, self.url, self.title, self.date, self.text)
-        cursor.execute(NewsArticle.CREATE_SQL, values)
+        cursor.execute(create_sql, values)
         db.commit()
 
 
     @staticmethod
     def get_unclean_articles():
-        return pd.read_sql_query(NewsArticle.WEBSITES_TO_CLEAN_QUERY, db)
+        websites_to_clean_query = '''
+            SELECT id, title, text
+            FROM ARTICLES
+            WHERE clean_title IS NULL
+                OR clean_text IS NULL
+        '''
+        return pd.read_sql_query(websites_to_clean_query, db)
 
 
     @staticmethod
     def clean_articles(df):
-        df['clean_title'] = (
-            df['title']
-                .pipe(hero.clean)
-                .apply(NewsArticle.remove_non_letters) 
-        )
-        df['clean_text'] = (
-            df['text']
-                .pipe(hero.clean)
-                .apply(NewsArticle.remove_non_letters) 
-        )
+        df['clean_title'] = NewsArticle.clean_article_field(df['title'])
+        df['clean_text'] = NewsArticle.clean_article_field(df['text'])
         return df
+
+
+    @staticmethod
+    def clean_article_field(df_column):
+        return (
+            df_column
+                .pipe(hero.clean)
+                .apply(NewsArticle.remove_non_letters) 
+        )
 
 
     @staticmethod
@@ -86,7 +85,7 @@ class NewsArticle:
                 .split()
             )
     
-    
+
     @staticmethod
     def save_cleaned_articles(cleaned_df):
         for _, row in cleaned_df.iterrows():
