@@ -5,10 +5,13 @@ import texthero as hero
 
 #get by date, date range
 #by political affiliation
+#past 7 days?
+#calculate total numbers of words analyzed per column
+#calculate % occurence 
 class TopWords:
     BASE_SQL = 'SELECT website_id, clean_title, clean_text FROM articles'
 
-    def display_all_top_words():
+    def display_all():
         base_df = TopWords.get_all_articles()
         TopWords.output_word_dataframe_with_type(base_df, 'all articles')
 
@@ -18,7 +21,7 @@ class TopWords:
         return pd.read_sql_query(query, db)
 
 
-    def display_todays_top_words():
+    def display_today():
         base_df = TopWords.get_todays_articles()
         TopWords.output_word_dataframe_with_type(base_df, "today's articles")
 
@@ -29,14 +32,42 @@ class TopWords:
         return pd.read_sql_query(query, db)
 
 
+    def display_right_wing():
+        base_df = TopWords.get_all_right_wing_articles()
+        TopWords.output_word_dataframe_with_type(base_df, "right wing articles")
+
+
+    def get_all_right_wing_articles():
+        query = f'''{TopWords.BASE_SQL} AS a 
+                INNER JOIN websites AS w 
+                ON w.id = a.website_id 
+                WHERE tag_right_wing = 1'''
+        return pd.read_sql_query(query, db)
+
+
+    def display_left_wing():
+        base_df = TopWords.get_all_left_wing_articles()
+        TopWords.output_word_dataframe_with_type(base_df, "left wing articles")
+
+
+    def get_all_left_wing_articles():
+        query = f'''{TopWords.BASE_SQL} AS a 
+                INNER JOIN websites AS w 
+                ON w.id = a.website_id 
+                WHERE tag_left_wing = 1'''
+        return pd.read_sql_query(query, db)
+
+
     def output_word_dataframe_with_type(base_df, query_type):
         print(f'Analyzing {base_df.shape[0]} News Articles...')
         print('... \n')
         
         df = TopWords.create_title_text_sum_df(base_df)
         pd.options.display.float_format = '{:,.0f}'.format
+
         print(f'Here are the Top Words for {query_type}:')
-        print(df.head(40) + '\n')
+        print(df.head(40))
+        print('/n')
         #print words counted?
 
 

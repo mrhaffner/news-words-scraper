@@ -4,8 +4,13 @@ import pandas as pd
 import texthero as hero
 import matplotlib.pyplot as plt
 
-TopWords.display_all_top_words()
-TopWords.display_todays_top_words()
+
+#plot left wing vs right wing
+#plot state sponsored vs not
+TopWords.display_all()
+TopWords.display_today()
+TopWords.display_right_wing()
+TopWords.display_left_wing()
 
 # df = pd.read_sql_query('SELECT * FROM words', db)
 # df['total_count'] = df.loc[:, df.columns != 'word'].sum(axis=1)
