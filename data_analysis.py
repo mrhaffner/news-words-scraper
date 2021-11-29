@@ -5,6 +5,7 @@ import texthero as hero
 import matplotlib.pyplot as plt
 
 TopWords.display_all_top_words()
+TopWords.display_todays_top_words()
 
 # df = pd.read_sql_query('SELECT * FROM words', db)
 # df['total_count'] = df.loc[:, df.columns != 'word'].sum(axis=1)
