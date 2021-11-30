@@ -10,7 +10,10 @@ TopWords.display_all()
 TopWords.display_all(today=True)
 # TopWords.display_today()
 TopWords.display_right_wing()
+TopWords.display_right_wing(today=True)
 TopWords.display_left_wing()
+TopWords.display_left_wing(today=True)
+
 
 # df = pd.read_sql_query('SELECT * FROM words', db)
 # df['total_count'] = df.loc[:, df.columns != 'word'].sum(axis=1)

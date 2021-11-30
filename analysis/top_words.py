@@ -16,50 +16,44 @@ class TopWords:
 
     def display_all(today=False):
         base_df = TopWords.get_all_articles(today)
+        print(base_df.head())
         today_qualifier = ' from today' if today else ''
         output_qualifier = 'all articles' + today_qualifier
         TopWords.output_word_dataframe_with_type(base_df,  output_qualifier)
 
 
     def get_all_articles(today):
-        query = TopWords.BASE_SQL if today == False else TopWords.TODAY_SQL
+        # query = TopWords.BASE_SQL if today == False else TopWords.TODAY_SQL
+        query = TopWords.get_sql_query(today)
         return pd.read_sql_query(query, db)
 
 
-    def display_today():
-        base_df = TopWords.get_todays_articles()
-        TopWords.output_word_dataframe_with_type(base_df, "today's articles")
-
-
-    def get_todays_articles():
-        todays_date = datetime.today().strftime('%Y-%m-%d')
-        query = f"{TopWords.BASE_SQL} WHERE date = '{todays_date}'"
-        return pd.read_sql_query(query, db)
-
-
-    def display_right_wing():
-        base_df = TopWords.get_all_right_wing_articles()
+    def display_right_wing(today=False):
+        base_df = TopWords.get_all_right_wing_articles(today)
         TopWords.output_word_dataframe_with_type(base_df, "right wing articles")
 
 
-    def get_all_right_wing_articles():
-        query = f'''{TopWords.BASE_SQL} AS a 
-                INNER JOIN websites AS w 
-                ON w.id = a.website_id 
-                WHERE tag_right_wing = 1'''
+    def get_all_right_wing_articles(today):
+        # query = f'''{TopWords.BASE_SQL} AS a 
+        #         INNER JOIN websites AS w 
+        #         ON w.id = a.website_id 
+        #         WHERE tag_right_wing = 1'''
+        query = TopWords.get_sql_query(today=today, right_wing=True)
+
         return pd.read_sql_query(query, db)
 
 
-    def display_left_wing():
-        base_df = TopWords.get_all_left_wing_articles()
+    def display_left_wing(today=False):
+        base_df = TopWords.get_all_left_wing_articles(today)
         TopWords.output_word_dataframe_with_type(base_df, "left wing articles")
 
 
-    def get_all_left_wing_articles():
-        query = f'''{TopWords.BASE_SQL} AS a 
-                INNER JOIN websites AS w 
-                ON w.id = a.website_id 
-                WHERE tag_left_wing = 1'''
+    def get_all_left_wing_articles(today):
+        # query = f'''{TopWords.BASE_SQL} AS a 
+        #         INNER JOIN websites AS w 
+        #         ON w.id = a.website_id 
+        #         WHERE tag_left_wing = 1'''
+        query = TopWords.get_sql_query(today=today, left_wing=True)
         return pd.read_sql_query(query, db)
 
 
@@ -86,12 +80,29 @@ class TopWords:
         return pd.concat([title_df, text_df, sum_df], axis=1)
 
 
-    def plot_right_vs_left():
-        base_right_df = TopWords.get_all_right_wing_articles()
-        right_df = TopWords.create_title_text_sum_df(base_right_df)
-        base_left_df = TopWords.get_all_left_wing_articles()
-        left_df = TopWords.create_title_text_sum_df(base_left_df)
+    # def plot_right_vs_left():
+    #     base_right_df = TopWords.get_all_right_wing_articles()
+    #     right_df = TopWords.create_title_text_sum_df(base_right_df)
+    #     base_left_df = TopWords.get_all_left_wing_articles()
+    #     left_df = TopWords.create_title_text_sum_df(base_left_df)
 
+
+    def get_sql_query(today = False, right_wing = False, left_wing = False):
+        base_sql = 'SELECT website_id, clean_title, clean_text FROM articles'
+        today_qualifier = f" date = '{datetime.today().strftime('%Y-%m-%d')}'" if today else ''
+
+        if right_wing or left_wing:
+            political_leaning = 'right_wing' if right_wing else 'left_wing'
+            political_sql = f'{base_sql} AS a INNER JOIN websites AS w ON w.id = a.website_id WHERE tag_{political_leaning} = 1'
+            today_qualifier_plus = f" AND{today_qualifier}" if today else ''
+            print(political_sql + today_qualifier_plus)
+            return political_sql + today_qualifier_plus
+        
+        today_qualifier_plus = f" WHERE{today_qualifier}" if today else ''
+        print(base_sql + today_qualifier_plus)
+        return base_sql + today_qualifier_plus
+
+        
 
 
     # query = '''SELECT website_id, clean_title, clean_text, date, tag_left_wing, tag_right_wing, tag_state_funded
