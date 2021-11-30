@@ -2,13 +2,13 @@ from analysis.top_words import TopWords
 from project import db
 import pandas as pd
 import texthero as hero
-import matplotlib.pyplot as plt
 
 
 #plot left wing vs right wing
 #plot state sponsored vs not
 TopWords.display_all()
-TopWords.display_today()
+TopWords.display_all(today=True)
+# TopWords.display_today()
 TopWords.display_right_wing()
 TopWords.display_left_wing()
 

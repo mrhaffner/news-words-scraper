@@ -2,6 +2,8 @@ from project import db
 from datetime import datetime
 import pandas as pd
 import texthero as hero
+# import matplotlib.pyplot as plt
+
 
 #get by date, date range
 #by political affiliation
@@ -10,14 +12,17 @@ import texthero as hero
 #calculate % occurence 
 class TopWords:
     BASE_SQL = 'SELECT website_id, clean_title, clean_text FROM articles'
+    TODAY_SQL = f"{BASE_SQL} WHERE date = '{datetime.today().strftime('%Y-%m-%d')}'"
 
-    def display_all():
-        base_df = TopWords.get_all_articles()
-        TopWords.output_word_dataframe_with_type(base_df, 'all articles')
+    def display_all(today=False):
+        base_df = TopWords.get_all_articles(today)
+        today_qualifier = ' from today' if today else ''
+        output_qualifier = 'all articles' + today_qualifier
+        TopWords.output_word_dataframe_with_type(base_df,  output_qualifier)
 
 
-    def get_all_articles():
-        query = TopWords.BASE_SQL
+    def get_all_articles(today):
+        query = TopWords.BASE_SQL if today == False else TopWords.TODAY_SQL
         return pd.read_sql_query(query, db)
 
 
@@ -67,7 +72,7 @@ class TopWords:
 
         print(f'Here are the Top Words for {query_type}:')
         print(df.head(40))
-        print('/n')
+        print('\n')
         #print words counted?
 
 
@@ -80,6 +85,12 @@ class TopWords:
         sum_df = pd.DataFrame({'sum_word': sum_all_words.index, 'sum_count': sum_all_words.values})
         return pd.concat([title_df, text_df, sum_df], axis=1)
 
+
+    def plot_right_vs_left():
+        base_right_df = TopWords.get_all_right_wing_articles()
+        right_df = TopWords.create_title_text_sum_df(base_right_df)
+        base_left_df = TopWords.get_all_left_wing_articles()
+        left_df = TopWords.create_title_text_sum_df(base_left_df)
 
 
 
