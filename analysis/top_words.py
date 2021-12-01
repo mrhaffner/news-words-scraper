@@ -2,6 +2,7 @@ from project import db
 from datetime import datetime
 import pandas as pd
 import texthero as hero
+# import scattertext as st
 # import matplotlib.pyplot as plt
 #get by date, date range
 #by political affiliation
@@ -80,36 +81,3 @@ class TopWords:
         
         today_qualifier_plus = f" WHERE{today_qualifier}" if today else ''
         return base_sql + today_qualifier_plus
-
-    #need column that says right wing or left wing
-    #axis clean title/text vs right_wing/left_wing as political_leaning
-
-    #need to create input df
-    #where do I call this method?
-    
-    # def graph_text(df, analyze_col):
-    #     df["parse"] = df[analyze_col].apply(st.whitespace_nlp_with_sentences)
-    #     #political_leaning maybe change to input variable for state sponsored or compare newsite to newsite
-    #     #could even let users generate their own comparison?
-    #     corpus = (
-    #         st.CorpusFromParsedDocuments(df, category_col="political_leaning", parsed_col="parse")
-    #         .build()
-    #         .get_unigram_corpus()
-    #         .compact(st.AssociationCompactor(2000))
-    #     )
-
-    #     ##missing code? scaled-f?
-
-    #     html = st.produce_scattertext_explorer(
-    #         corpus,
-    #         category="political_leaning",
-    #         category_name="Right Wing",
-    #         not_category_name="Left Wing",
-    #         minimum_term_frequency=5,
-    #         pmi_threshold_coefficient=0,
-    #         width_in_pixels=1000,
-    #         # metadata=corpus.get_df()["page_host"],
-    #         transform=st.Scalers.dense_rank,
-    #     )
-    #     #variable name to write different input options to different files? today vs all etc
-    #     open("right_wing_vs_left_wing_news_words.html", "w").write(html)

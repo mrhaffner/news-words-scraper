@@ -19,9 +19,11 @@ class NewsWebsite:
         start_time = time.clock()
         print('Engaging News Scraper...')
         print('...')
+
         websites = NewsWebsite.get_all()
         for website in websites:
             NewsWebsite.scrape_website(website)
+
         print('Finished scraping')
         print(f'Scraping took {time.clock() - start_time} seconds')
 
@@ -39,8 +41,10 @@ class NewsWebsite:
     @staticmethod
     def scrape_website(website):
         print(f'Scraping {website}')
+
         start_time = time.clock()
         website.scrape_rss_feed()
+        
         print(f'Scraping {website} took {time.clock() - start_time} seconds')
 
 

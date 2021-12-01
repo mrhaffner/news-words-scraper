@@ -9,4 +9,6 @@ TopWords.display_right_wing(today=True)
 TopWords.display_left_wing()
 TopWords.display_left_wing(today=True)
 
+# TopWords.graph_text()
+
 db.close()
