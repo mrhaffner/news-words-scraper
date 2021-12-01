@@ -21,10 +21,7 @@ class NewsWebsite:
         print('...')
         websites = NewsWebsite.get_all()
         for website in websites:
-            print(f'Scraping {website}')
-            website_start_time = time.clock()
-            website.scrape_rss_feed()
-            print(f'Scraping {website} took {time.clock() - website_start_time} seconds')
+            NewsWebsite.scrape_website(website)
         print('Finished scraping')
         print(f'Scraping took {time.clock() - start_time} seconds')
 
@@ -37,6 +34,14 @@ class NewsWebsite:
         '''
         websites_results = cursor.execute(websites_query)
         return [NewsWebsite(*website_info) for website_info in websites_results]
+
+
+    @staticmethod
+    def scrape_website(website):
+        print(f'Scraping {website}')
+        start_time = time.clock()
+        website.scrape_rss_feed()
+        print(f'Scraping {website} took {time.clock() - start_time} seconds')
 
 
     def scrape_rss_feed(self):
