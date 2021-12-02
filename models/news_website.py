@@ -16,7 +16,7 @@ class NewsWebsite:
 
     @staticmethod
     def scrape_all():
-        start_time = time.clock()
+        start_time = time.time()
         print('Engaging News Scraper...')
         print('...')
 
@@ -25,7 +25,7 @@ class NewsWebsite:
             NewsWebsite.scrape_website(website)
 
         print('Finished scraping')
-        print(f'Scraping took {time.clock() - start_time} seconds')
+        print(f'Scraping took {time.time() - start_time} seconds')
 
 
     @staticmethod
@@ -40,19 +40,18 @@ class NewsWebsite:
 
     @staticmethod
     def scrape_website(website):
-        print(f'Scraping {website}')
+        print(f'Scraping {website.name}')
 
-        start_time = time.clock()
+        start_time = time.time()
         website.scrape_rss_feed()
         
-        print(f'Scraping {website} took {time.clock() - start_time} seconds')
+        print(f'Scraping {website.name} took {time.time() - start_time} seconds')
 
 
     def scrape_rss_feed(self):
         soup = get_soup(self.rss_url)
         rss_articles = soup.find_all('item')
         for rss_article in rss_articles:
-            #check if exists?
             new_article = NewsArticle(rss_article, self.article_entry_element, self.article_entry_class, self.article_entry_id, self.id)
             new_article.create_one()
             time.sleep(1)

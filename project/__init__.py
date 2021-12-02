@@ -5,11 +5,10 @@ cursor = db.cursor()
 
 create_articles_table = '''
     CREATE TABLE IF NOT EXISTS articles (
-        id INTEGER PRIMARY KEY,
         website_id TEXT NOT NULL,
-        url TEXT NOT NULL,
-        title TEXT NOT NULL,
+        url TEXT NOT NULL PRIMARY KEY,
         date TEXT NOT NULL,
+        title TEXT NOT NULL,
         text TEXT NOT NULL,
         clean_title TEXT,
         clean_text TEXT,

@@ -2,8 +2,6 @@ import scattertext as st
 import pandas as pd
 from project import db
     
-#need to create input df
-#where do I call this method?
 
 def get_title_df():
     query = '''

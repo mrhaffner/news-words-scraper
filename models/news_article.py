@@ -38,7 +38,7 @@ class NewsArticle:
 
     def create_one(self):
         create_sql = '''
-            INSERT INTO articles (website_id, url, title, date, text) 
+            INSERT OR IGNORE INTO articles (website_id, url, title, date, text) 
             VALUES(?,?,?,?,?)
         '''
         if self.text == '':
@@ -51,7 +51,7 @@ class NewsArticle:
     @staticmethod
     def get_unclean_articles():
         websites_to_clean_query = '''
-            SELECT id, title, text
+            SELECT url, title, text
             FROM ARTICLES
             WHERE clean_title IS NULL
                 OR clean_text IS NULL
@@ -89,6 +89,6 @@ class NewsArticle:
     @staticmethod
     def save_cleaned_articles(cleaned_df):
         for _, row in cleaned_df.iterrows():
-            update_sql = 'UPDATE articles SET clean_title = ?, clean_text = ? WHERE id = ?'
-            cursor.execute(update_sql, (row['clean_title'], row['clean_text'], row['id']))
+            update_sql = 'UPDATE articles SET clean_title = ?, clean_text = ? WHERE url = ?'
+            cursor.execute(update_sql, (row['clean_title'], row['clean_text'], row['url']))
         db.commit()
