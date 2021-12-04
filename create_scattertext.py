@@ -1,7 +1,7 @@
 import scattertext as st    
 import pandas as pd
 from project import db
-import datetime
+from datetime import datetime
     
 
 def get_title_df(today=False):
@@ -76,6 +76,12 @@ def save_graph_by_date_text_field(text_field='title', today=False):
         open(f"right_wing_vs_left_wing_text_words{today_text}.html", "w").write(html)
     else:
         print('Invalid Input')
+
+
+# save_graph_by_date_text_field()
+# save_graph_by_date_text_field('text')
+save_graph_by_date_text_field(today=True)
+save_graph_by_date_text_field('text', True)
 
 
 db.close()

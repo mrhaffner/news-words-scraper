@@ -17,13 +17,14 @@ class NewsWebsite:
     @staticmethod
     def scrape_all():
         start_time = time.time()
-        print('Engaging News Scraper...')
+        print('Engaging News Scraper')
         print('...')
 
         websites = NewsWebsite.get_all()
         for website in websites:
             NewsWebsite.scrape_website(website)
-
+            if website.name == 'CNN':
+                break
         print('Finished scraping')
         print(f'Scraping took {time.time() - start_time} seconds')
 
