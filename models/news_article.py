@@ -25,7 +25,11 @@ class NewsArticle:
 
 
     def scrape_article_text(self, entry_element, entry_class, entry_id):
+        if self.website_id == 'cnn' and 'www.cnn.com' not in self.url:
+            return ''
+        
         soup = get_soup(self.url)
+
         if entry_id != '':
             article_body = soup.find(entry_element, id=entry_id)
         else:

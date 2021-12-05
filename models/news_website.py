@@ -25,6 +25,7 @@ class NewsWebsite:
             NewsWebsite.scrape_website(website)
             if website.name == 'CNN':
                 break
+
         print('Finished scraping')
         print(f'Scraping took {time.time() - start_time} seconds')
 
@@ -52,9 +53,11 @@ class NewsWebsite:
     def scrape_rss_feed(self):
         soup = get_soup(self.rss_url)
         rss_articles = soup.find_all('item')
+
         for rss_article in rss_articles:
             new_article = NewsArticle(rss_article, self.article_entry_element, self.article_entry_class, self.article_entry_id, self.id)
-            new_article.create_one()
+            if new_article.text != '':
+                new_article.create_one()
             time.sleep(1)
 
 

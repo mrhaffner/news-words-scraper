@@ -37,9 +37,12 @@ def get_text_df(today=False):
 
 
 def graph_text(df, analyze_col):
+    print('parsing')
     df["parse"] = df[analyze_col].apply(st.whitespace_nlp_with_sentences)
     #political_leaning maybe change to input variable for state sponsored or compare newsite to newsite
     #could even let users generate their own comparison?
+    print('parsing done')
+    print('generating corpus')
     corpus = (
         st.CorpusFromParsedDocuments(df, category_col="political_leaning", parsed_col="parse")
         # st.CorpusFromParsedDocuments(df, category_col="political_leaning", text_col=analyze_col, nlp=nlp)
@@ -47,9 +50,9 @@ def graph_text(df, analyze_col):
         .get_unigram_corpus()
         .compact(st.AssociationCompactor(2000))
     )
-
+    print('corpus done')
     # print(list(corpus.get_scaled_f_scores_vs_background().index[:10]))
-
+    print('generating html')
     html = st.produce_scattertext_explorer(
         corpus,
         category="Right Wing",
@@ -61,6 +64,7 @@ def graph_text(df, analyze_col):
         transform=st.Scalers.dense_rank,
     )
     #variable name to write different input options to different files? today vs all etc
+    print('html done')
     return html
 
 def save_graph_by_date_text_field(text_field='title', today=False):
@@ -79,9 +83,9 @@ def save_graph_by_date_text_field(text_field='title', today=False):
 
 
 # save_graph_by_date_text_field()
-# save_graph_by_date_text_field('text')
-save_graph_by_date_text_field(today=True)
-save_graph_by_date_text_field('text', True)
+save_graph_by_date_text_field('text')
+# save_graph_by_date_text_field(today=True)
+# save_graph_by_date_text_field('text', True)
 
 
 db.close()

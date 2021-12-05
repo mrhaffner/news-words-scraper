@@ -1,3 +1,4 @@
 /env
 website_data.sqlite3
 websites.csv
+__pycache__
